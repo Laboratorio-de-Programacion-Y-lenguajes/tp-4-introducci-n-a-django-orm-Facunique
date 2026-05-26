@@ -61,24 +61,17 @@ class Libro(models.Model):
         """Retorna True si hay al menos una copia disponible."""
         return self.disponibles() > 0
     
-    
+
 
 class Prestamo(models.Model):
     """
     Registro de un préstamo de libro a un usuario.
     Si fecha_devolucion es NULL → el préstamo está activo.
     """
+    libro = models.ForeignKey(Libro, on_delete=models.CASCADE)
+    nombre_prestatario = models.CharField(max_length=150)
+    fecha_prestamo = models.DateField(default=timezone.now)
+    fecha_devolucion = models.DateField(null=True, blank=True)
 
-    # TODO: implementar los campos:
-    # libro              → ForeignKey(Libro, on_delete=models.CASCADE)
-    # nombre_prestatario → CharField
-    # fecha_prestamo     → DateField
-    # fecha_devolucion   → DateField (null=True, blank=True)
-    #
-    # Preguntas guía:
-    # ¿Por qué usamos CASCADE aquí y PROTECT en Libro→Autor?
-    # ¿Qué valor por defecto tendría sentido para fecha_prestamo?
-    # Tip: podés usar default=timezone.now si querés fecha automática,
-    #      o dejarlo sin default para que el test lo defina explícitamente.
-
-    pass
+    def __str__(self) -> str:
+        return f"Préstamo de {self.libro.titulo} a {self.nombre_prestatario}"
